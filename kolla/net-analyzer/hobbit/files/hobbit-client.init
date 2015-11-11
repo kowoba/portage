@@ -1,0 +1,53 @@
+#!/sbin/runscript
+# Copyright 1999-2005 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+
+depend() {
+  need net
+  use dns logger
+  after sshd
+  }
+
+checkconfig() {
+  test -n "${HOBBITCLIENT}"     || HOBBITCLIENT="hobbit-c"
+  test -n "${HOBBITCLIENTHOME}" || HOBBITCLIENTHOME="/usr/lib/hobbit/client"
+  test -n "${MACHINEDOTS}"      || MACHINEDOTS="$(hostname -f)"
+  test -n "${BBOSTYPE}"         || BBOSTYPE="$(uname -s | tr '[A-Z]' '[a-z]')"
+  test -n "${BBOSSCRIPT}"       || BBOSSCRIPT="hobbitclient-$BBOSTYPE.sh"
+  test -n "${MACHINE}"          || MACHINE="${MACHINEDOTS//\./,}"
+
+  if ! su -s /bin/bash -c "test -w ${HOBBITCLIENTHOME}/logs/" ${HOBBITCLIENT}
+  then
+  	eerror " ${HOBBITCLIENT} cannot write to the ${HOBBITCLIENTHOME}/logs directory"
+  	return 1
+  fi
+
+  if ! su -s /bin/bash -c "test -w ${HOBBITCLIENTHOME}/tmp/" ${HOBBITCLIENT}
+  then
+  	eerror "${HOBBITCLIENT} can not write to the ${HOBBITCLIENTHOME}/tmp directory"
+  	return 1
+  fi
+
+  export MACHINEDOTS BBOSTYPE BBOSSCRIPT MACHINE HOBBITCLIENTHOME
+  return 0
+  }
+
+start() {
+  checkconfig || return 1
+  ebegin "Starting hobbit-client for ${MACHINEDOTS}"
+  start-stop-daemon --start --chuid hobbit-c:adm \
+  	--exec ${HOBBITCLIENTHOME}/bin/hobbitlaunch -- \
+  	--config=${HOBBITCLIENTHOME}/etc/clientlaunch.cfg \
+	--pidfile=${HOBBITCLIENTHOME}/logs/hobbitclient.pid \
+	--log=${HOBBITCLIENTHOME}/logs/clientlaunch.log
+  eend $? "Failed to start hobbit-client"
+  }
+
+stop() {
+  checkconfig || return 1
+  ebegin "Stopping hobbit-client"
+#  start-stop-daemon --stop --user ${HOBBITCLIENT}
+  pkill -U ${HOBBITCLIENT}
+  eend $? "Failed to stop hobbit-client"
+  }
+

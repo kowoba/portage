@@ -1,0 +1,22 @@
+--- ipw2200-1.2.1/Makefile.orig	2007-01-25 19:54:23.000000000 +0100
++++ ipw2200-1.2.1/Makefile	2007-01-25 19:55:08.000000000 +0100
+@@ -153,18 +153,8 @@
+ distclean: clean
+ 	rm -f tags TAGS
+ 
+-TMP=$(PWD)/tmp
+-MODVERDIR=$(TMP)/.tmp_versions
+-
+ modules:
+-	mkdir -p $(MODVERDIR)
+-	-@([ -f $(IEEE80211_MODVERDIR)/../Module.symvers ] && \
+-	    cp $(IEEE80211_MODVERDIR)/../Module.symvers $(PWD)) || \
+-	  ([ -f $(IEEE80211_MODVERDIR)/../Modules.symvers ] && \
+-	    cp $(IEEE80211_MODVERDIR)/../Modules.symvers $(PWD)) || \
+-	  ([ -f $(IEEE80211_MODVERDIR)/ieee80211.mod ] && \
+-	    cp $(IEEE80211_MODVERDIR)/*.mod $(MODVERDIR)) || true
+-	$(MAKE) -C $(KSRC) M=$(PWD) MODVERDIR=$(MODVERDIR) modules
++	$(MAKE) -C $(KSRC) M=$(PWD) modules
+ 
+ 
+ patch_kernel:

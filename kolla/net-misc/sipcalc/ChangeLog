@@ -1,0 +1,29 @@
+# ChangeLog for net-misc/sipcalc
+# Copyright 1999-2007 Gentoo Foundation; Distributed under the GPL v2
+# $Header: /var/cvsroot/gentoo-x86/net-misc/sipcalc/ChangeLog,v 1.7 2007/02/22 02:45:42 peper Exp $
+
+  22 Feb 2007; Piotr Jaroszyński <peper@gentoo.org> ChangeLog:
+  Transition to Manifest2.
+
+  28 Jun 2006; Gustavo Zacarias <gustavoz@gentoo.org> sipcalc-1.1.2.ebuild:
+  Stable on sparc
+
+  03 Oct 2005; Andrej Kacian <ticho@gentoo.org> sipcalc-1.1.2.ebuild:
+  Stable on amd64, do not install generic INSTALL document.
+
+  03 Apr 2005; Jan Brinkmann <luckyduck@gentoo.org> sipcalc-1.1.2.ebuild:
+  added ~amd64 to KEYWORDS, fixes #87346
+
+  27 Dec 2004; Andrej Kacian <ticho@gentoo.org> sipcalc-1.1.2.ebuild:
+  Stable on x86.
+
+  10 Dec 2004; Jason Wever <weeve@gentoo.org> sipcalc-1.1.2.ebuild:
+  Added ~sparc keyword.
+
+*sipcalc-1.1.2 (20 Nov 2004)
+
+  20 Nov 2004; Andrej Kacian <ticho@gentoo.org> +metadata.xml,
+  +sipcalc-1.1.2.ebuild:
+  Initial import. Closes bug #68197, ebuild submitted by Marti
+  <integor@gmail.com>.
+

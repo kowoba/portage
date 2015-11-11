@@ -1,0 +1,137 @@
+diff -Nru cw-20041105.orig/Makefile cw-20041105/Makefile
+--- cw-20041105.orig/Makefile	2004-02-12 14:08:05.000000000 +0100
++++ cw-20041105/Makefile	2005-03-08 01:11:18.807857213 +0100
+@@ -1,14 +1,14 @@
+-subdir=	device doc sid
++subdir=	device
+ 
+ all install uninstall:
+ 	for i in $(subdir); do $(MAKE) -C $$i $@; done
+ 
+ clean:	
+ 	for i in $(subdir); do $(MAKE) -C $$i $@; done
+-	$(RM) *~
++	$(RM) -f *~
+ 
+ cvsclean:
+ 	cvs update -dP
+ 	for i in $(subdir); do $(MAKE) -C $$i $@; done
+-	$(RM) -r CVS
+-	$(RM) -r doc/CVS
++	$(RM) -rf CVS
++	$(RM) -rf doc/CVS
+diff -Nru cw-20041105.orig/device/Makefile cw-20041105/device/Makefile
+--- cw-20041105.orig/device/Makefile	2004-11-05 15:45:38.000000000 +0100
++++ cw-20041105/device/Makefile	2005-03-08 01:17:13.100969032 +0100
+@@ -9,13 +9,13 @@
+ 
+ else
+ 
+-KDIR	:= /lib/modules/$(shell uname -r)/build
++KDIR	:= /usr/src/linux
+ PWD	:= $(shell pwd)
+ 
+ all:	modules
+ 
+ modules modules_install:
+-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) $@
++	ARCH="i386" $(MAKE) -C $(KDIR) SUBDIRS=$(PWD) $@
+ 
+ tags:	
+ 	etags *.c
+@@ -24,16 +24,17 @@
+ 	rm -f *~ *.o *.ko *.mod.c .*.cmd
+ 
+ cvsclean:
+-	$(RM) -r CVS
++	$(RM) -rf CVS
+ 
+ install:	modules_install
+-	install -m 644 cwsid.h /usr/local/include
++	mkdir -p ${prefix}/include
++	install -m 644 cwsid.h ${prefix}/include
+ 	sh device.sh install
+ 	rmmod cw || true
+ 	depmod -a
+ 
+ uninstall:
+-	$(RM) /usr/local/include/cwsid.h
++	$(RM) -f ${prefix}/include/cwsid.h
+ 	sh device.sh uninstall
+ 
+ load:
+diff -Nru cw-20041105.orig/device/device.sh cw-20041105/device/device.sh
+--- cw-20041105.orig/device/device.sh	2003-12-28 23:13:44.000000000 +0100
++++ cw-20041105/device/device.sh	2005-03-08 01:11:18.808857047 +0100
+@@ -4,7 +4,7 @@
+ DEV=/dev/sid
+ STR=char-major-10-$CWSIDMINOR
+ MOD=cw
+-FILE=/etc/modprobe.conf
++FILE=/etc/modules.d/catweasel
+ 
+ case "$1" in
+   install)
+diff -Nru cw-20041105.orig/sid/Makefile cw-20041105/sid/Makefile
+--- cw-20041105.orig/sid/Makefile	2004-11-05 15:45:38.000000000 +0100
++++ cw-20041105/sid/Makefile	2005-03-08 01:11:18.808857047 +0100
+@@ -30,23 +30,24 @@
+ 	$(CXX) -o $@ $^ $(LIBS)
+ 
+ clean:	
+-	$(RM) *~ *.o $(EXE) core Makefile.dep
++	$(RM) -f *~ *.o $(EXE) core Makefile.dep
+ 
+ cvsclean:
+-	$(RM) -r CVS
++	$(RM) -rf CVS
+ 
+ install:	all
+-	install -o root -m 4755 sid /usr/local/bin
+-	install -m 755 sidinfo /usr/local/bin
+-	if [ ! -f /etc/sid.conf ]; then install -m 644 sid.conf /etc; fi
+-	install -m 644 sid.1 sidinfo.1 /usr/local/man/man1
++	mkdir -p ${prefix}/bin ${prefix}/share/man/man1 ${prefix}/../etc/conf.d
++	install -o root -m 4755 sid ${prefix}/bin
++	install -m 755 sidinfo ${prefix}/bin
++	if [ ! -f ${prefix}/../etc/conf.d/sid ]; then install -m 644 sid.conf ${prefix}/../etc/conf.d/sid; fi
++	install -m 644 sid.1 sidinfo.1 ${prefix}/share/man/man1
+ 
+ uninstall:
+-	$(RM) /usr/local/bin/sid
+-	$(RM) /usr/local/bin/sidinfo
+-	$(RM) /etc/sid.conf
+-	$(RM) /usr/local/man/man1/sid.1
+-	$(RM) /usr/local/man/man1/sidinfo.1
++	$(RM) -f ${prefix}/bin/sid
++	$(RM) -f ${prefix}/bin/sidinfo
++	$(RM) -f ${prefix}/../etc/conf.d/sid
++	$(RM) -f ${prefix}/share/man/man1/sid.1
++	$(RM) -f ${prefix}/share/man/man1/sidinfo.1
+ 
+ dep:	
+ 	$(CXX) -E -M $(CXXFLAGS) *.cc *.cpp > Makefile.dep
+diff -Nru cw-20041105.orig/sid/main.cc cw-20041105/sid/main.cc
+--- cw-20041105.orig/sid/main.cc	2004-05-14 17:00:52.000000000 +0200
++++ cw-20041105/sid/main.cc	2005-03-08 01:11:18.810856715 +0100
+@@ -445,7 +445,7 @@
+   STILbase=getenv("HVSC_DIR");
+ 
+   doj::Configuration conf;
+-  conf.load("/etc/sid.conf");
++  conf.load("/etc/conf.d/sid");
+   conf.updateString("device", device);
+   conf.updateInt("timeout", timeout);
+   conf.updateBool("randomize", randomize);
+diff -Nru cw-20041105.orig/sid/sid.1 cw-20041105/sid/sid.1
+--- cw-20041105.orig/sid/sid.1	2003-05-17 21:37:10.000000000 +0200
++++ cw-20041105/sid/sid.1	2005-03-08 01:11:18.810856715 +0100
+@@ -106,7 +106,7 @@
+ Forward 10 seconds.
+ .SH "FILES"
+ .LP 
+-\fI/etc/sid.conf\fP 
++\fI/etc/conf.d/sid\fP 
+ .SH "ENVIRONMENT VARIABLES"
+ .LP 
+ \fBHVSC_DIR\fP

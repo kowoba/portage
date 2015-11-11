@@ -1,0 +1,57 @@
+--- debian/patches/any/cvs-lt-update.diff.orig	2010-04-22 03:55:52.000000000 +0200
++++ debian/patches/any/cvs-lt-update.diff	2010-04-22 04:03:50.000000000 +0200
+@@ -1,7 +1,7 @@
+ diff -Nurd linuxthreads.orig/ChangeLog linuxthreads/ChangeLog
+ --- linuxthreads.orig/ChangeLog	2006-10-01 19:05:33.000000000 +0200
+ +++ linuxthreads/ChangeLog	2007-01-08 03:14:22.000000000 +0100
+-@@ -1,3 +1,34 @@
++@@ -1,3 +1,28 @@
+ +2006-10-31  Ian Lance Taylor  <ian@airs.com>
+ +
+ +	* specific.c (__pthread_destroy_specifics): Clear pointer before
+@@ -27,13 +27,7 @@
+ +	* sysdeps/unix/sysv/linux/m68k/vfork.S (__vfork): On Coldfire targets,
+ +	load the GOTPC offset into a temporary register first.
+ +
+-+2006-10-02  Daniel Jacobowitz  <dan@codesourcery.com>
+-+
+-+	* sysdeps/pthread/gai_misc.h (__gai_start_notify_thread): Use
+-+	sigprocmask instead.
+-+	(__gai_create_helper_thread): Likewise.
+-+
+- 2006-10-01  Petr Salinger  <Petr.Salinger@seznam..cz>
++ 2006-10-02  Daniel Jacobowitz  <dan@codesourcery.com>
+  
+  	* sysdeps/pthread/gai_misc.h (__gai_start_notify_thread): Use
+ diff -Nurd linuxthreads.orig/specific.c linuxthreads/specific.c
+@@ -90,30 +84,3 @@
+ +#endif
+  
+  #endif /* pt-machine.h */
+-diff -Nurd linuxthreads.orig/sysdeps/pthread/gai_misc.h linuxthreads/sysdeps/pthread/gai_misc.h
+---- linuxthreads.orig/sysdeps/pthread/gai_misc.h	2006-10-01 06:06:14.000000000 +0200
+-+++ linuxthreads/sysdeps/pthread/gai_misc.h	2007-01-08 03:14:22.000000000 +0100
+-@@ -34,7 +34,7 @@
+- {
+-   sigset_t ss;
+-   sigemptyset (&ss);
+--  __sigprocmask (SIG_SETMASK, &ss, NULL);
+-+  sigprocmask (SIG_SETMASK, &ss, NULL);
+- }
+- 
+- extern inline int
+-@@ -55,12 +55,12 @@
+-   sigset_t ss;
+-   sigset_t oss;
+-   sigfillset (&ss);
+--  __sigprocmask (SIG_SETMASK, &ss, &oss);
+-+  sigprocmask (SIG_SETMASK, &ss, &oss);
+- 
+-   int ret = pthread_create (threadp, &attr, tf, arg);
+- 
+-   /* Restore the signal mask.  */
+--  __sigprocmask (SIG_SETMASK, &oss, NULL);
+-+  sigprocmask (SIG_SETMASK, &oss, NULL);
+- 
+-   (void) pthread_attr_destroy (&attr);
+-   return ret;

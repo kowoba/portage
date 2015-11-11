@@ -1,0 +1,27 @@
+# Toplevel Makefile for Hobbit
+BUILDTOPDIR=`pwd`
+CLIENTONLY = yes
+LOCALCLIENT = no
+
+# configure settings for Hobbit
+#
+# Toplevel dir
+BBTOPDIR = /usr/lib/hobbit
+# Server home dir for etc/, www/
+BBHOME = /usr/lib/hobbit/client
+
+# hobbit settings follows
+#
+# Username running hobbit
+BBUSER = hobbit-c
+# Hobbit server IP-address
+BBHOSTIP = 127.0.0.1
+
+include build/Makefile.Linux
+
+
+#
+# Add local CFLAGS etc. settings here
+
+include build/Makefile.rules
+

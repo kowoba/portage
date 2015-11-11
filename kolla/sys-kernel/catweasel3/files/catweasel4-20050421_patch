@@ -1,0 +1,133 @@
+diff -Nru catweasel-20050421.orig/Makefile catweasel-20050421/Makefile
+--- catweasel-20050421.orig/Makefile	2004-02-12 14:08:05.000000000 +0100
++++ catweasel-20050421/Makefile	2005-04-22 09:54:36.000000000 +0200
+@@ -1,14 +1,14 @@
+-subdir=	device doc sid
++subdir=	device doc
+ 
+ all install uninstall:
+ 	for i in $(subdir); do $(MAKE) -C $$i $@; done
+ 
+ clean:	
+ 	for i in $(subdir); do $(MAKE) -C $$i $@; done
+-	$(RM) *~
++	$(RM) -f *~
+ 
+ cvsclean:
+ 	cvs update -dP
+ 	for i in $(subdir); do $(MAKE) -C $$i $@; done
+-	$(RM) -r CVS
+-	$(RM) -r doc/CVS
++	$(RM) -rf CVS
++	$(RM) -rf doc/CVS
+diff -Nru catweasel-20050421.orig/device/Makefile catweasel-20050421/device/Makefile
+--- catweasel-20050421.orig/device/Makefile	2005-04-21 01:32:01.000000000 +0200
++++ catweasel-20050421/device/Makefile	2005-04-22 09:54:36.000000000 +0200
+@@ -9,13 +9,13 @@
+ 
+ else
+ 
+-KDIR	?= /lib/modules/$(shell uname -r)/build
++KDIR	?= /usr/src/linux
+ PWD	:= $(shell pwd)
+ 
+ all:	firmware.c modules
+ 
+ clean modules modules_install:
+-	$(MAKE) -C $(KDIR) M=$(PWD) $@
++	ARCH="i386" $(MAKE) -C $(KDIR) M=$(PWD) $@
+ 
+ tags:	
+ 	etags *.c
+@@ -26,13 +26,14 @@
+ 	rm -f *~ firmware.c
+ 
+ install:	modules_install
+-	install -m 644 cwsid.h /usr/local/include
++	mkdir ${prefix}/include
++	install -m 644 cwsid.h ${prefix}/include
+ 	sh device.sh install
+ 	rmmod cw || true
+ 	depmod -a
+ 
+ uninstall:
+-	$(RM) /usr/local/include/cwsid.h
++	$(RM) ${prefix}/include/cwsid.h
+ 	sh device.sh uninstall
+ 
+ load:
+diff -Nru catweasel-20050421.orig/device/device.sh catweasel-20050421/device/device.sh
+--- catweasel-20050421.orig/device/device.sh	2005-04-21 01:32:01.000000000 +0200
++++ catweasel-20050421/device/device.sh	2005-04-22 09:54:36.000000000 +0200
+@@ -4,7 +4,7 @@
+ DEV=/dev/sid
+ STR=char-major-10-$CWSIDMINOR
+ MOD=cw
+-FILE=/etc/modprobe.conf
++FILE=/etc/modules.d/catweasel
+ 
+ case "$1" in
+   install)
+diff -Nru catweasel-20050421.orig/sid/Makefile catweasel-20050421/sid/Makefile
+--- catweasel-20050421.orig/sid/Makefile	2005-02-25 10:49:30.000000000 +0100
++++ catweasel-20050421/sid/Makefile	2005-04-22 09:54:36.000000000 +0200
+@@ -33,23 +33,24 @@
+ 	$(CXX) -o $@ $^ $(LIBS)
+ 
+ clean:	
+-	$(RM) *~ *.o $(EXE) core Makefile.dep
++	$(RM) -f *~ *.o $(EXE) core Makefile.dep
+ 
+ cvsclean:
+-	$(RM) -r CVS
++	$(RM) -rf CVS
+ 
+ install:	all
+-	install -o root -m 4755 sid /usr/local/bin
+-	install -m 755 sidinfo /usr/local/bin
+-	if [ ! -f /etc/sid.conf ]; then install -m 644 sid.conf /etc; fi
+-	install -m 644 sid.1 sidinfo.1 /usr/local/man/man1
++	mkdir -p ${prefix}/bin ${prefix}/share/man/man1 ${prefix}/../etc/conf.d
++	install -o root -m 4755 sid ${prefix}/bin
++	install -m 755 sidinfo ${prefix}/bin
++	install -m 644 sid.conf ${prefix}/../etc/conf.d/sid
++	install -m 644 sid.1 sidinfo.1 ${prefix}/share/man/man1
+ 
+ uninstall:
+-	$(RM) /usr/local/bin/sid
+-	$(RM) /usr/local/bin/sidinfo
+-	$(RM) /etc/sid.conf
+-	$(RM) /usr/local/man/man1/sid.1
+-	$(RM) /usr/local/man/man1/sidinfo.1
++	$(RM) -f ${prefix}/bin/sid
++	$(RM) -f ${prefix}/bin/sidinfo
++	$(RM) -f ${prefix}/../etc/conf.d/sid
++	$(RM) -f ${prefix}/share/man/man1/sid.1
++	$(RM) -f ${prefix}/share/man/man1/sidinfo.1
+ 
+ dep:	
+ 	$(CXX) -E -M $(CXXFLAGS) *.cc *.cpp > Makefile.dep
+diff -Nru catweasel-20050421.orig/sid/main.cc catweasel-20050421/sid/main.cc
+--- catweasel-20050421.orig/sid/main.cc	2005-02-25 10:51:27.000000000 +0100
++++ catweasel-20050421/sid/main.cc	2005-04-22 09:54:36.000000000 +0200
+@@ -489,7 +489,7 @@
+   STILbase=getenv("HVSC_DIR");
+ 
+   doj::Configuration conf;
+-  conf.load("/etc/sid.conf");
++  conf.load("/etc/conf.d/sid");
+   conf.updateString("device", device);
+   conf.updateInt("timeout", timeout);
+   conf.updateBool("randomize", randomize);
+diff -Nru catweasel-20050421.orig/sid/sid.1 catweasel-20050421/sid/sid.1
+--- catweasel-20050421.orig/sid/sid.1	2005-01-22 19:29:10.000000000 +0100
++++ catweasel-20050421/sid/sid.1	2005-04-22 09:54:36.000000000 +0200
+@@ -116,7 +116,7 @@
+ Forward 10 seconds.
+ .SH "FILES"
+ .LP 
+-\fI/etc/sid.conf\fP 
++\fI/etc/conf.d/sid\fP 
+ .SH "ENVIRONMENT VARIABLES"
+ .LP 
+ \fBHVSC_DIR\fP

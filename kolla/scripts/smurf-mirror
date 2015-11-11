@@ -1,0 +1,3 @@
+#! /bin/sh
+mkdir -p ${EPREFIX}/usr/portage/local/kolla
+${EPREFIX}/usr/bin/rsync --verbose --recursive --links --perms --times --devices --delete --timeout=300 rsync://rsync.kolla.no/kolla-portage ${EPREFIX}/usr/portage/local/kolla/

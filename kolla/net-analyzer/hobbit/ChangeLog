@@ -1,0 +1,41 @@
+# ChangeLog for net-analyzer/hobbit-client
+# Copyright 2002-2005 Gentoo Foundation; Distributed under the GPL v2
+# $Header: $
+
+*hobbit-4.2.0-r1 (17 Dec 2006)
+
+  17 Dec 2006; Kolbjoern Barmen <hobbit@kolla.no>:
+  Added raid.sh
+
+*hobbit-4.2.0 (17 Dec 2006)
+
+  17 Dec 2006; Kolbjoern Barmen <hobbit@kolla.no>:
+  Version-bump to 4.2.0
+
+*hobbit-4.2_beta20060605 (05 Jun 2006)
+
+  05 Jun 2006; Kolbjoern Barmen <hobbit@kolla.no>:
+  Version-bump to test beta-release
+  Merged with hobbit, new USE flag "client-only"
+
+*hobbit-4.2_alpha20060423 (07 May 2006)
+
+  07 May 2006; Kolbjoern Barmen <hobbit@kolla.no>:
+  Version-bump to test alpha-release
+
+*hobbit-4.1.2_p1-r1 (29 Apr 2006)
+
+  29 Apr 2006; Kolbjoern Barmen <hobbit@kolla.no>:
+  Simpler and better check of directories in init script
+  Tested on m68k, armeb and armel as well as x86
+
+*hobbit-4.1.2_p1 (29 Apr 2006)
+
+  29 Apr 2006; Kolbjoern Barmen <hobbit@kolla.no>:
+  Lots of changes...
+
+*hobbit-4.1.2 (18 Jan 2006)
+
+  18 Jan 2006; Paul daSilva <pdasilva@polr.org>:
+  Initial import by POLR Technologies. Ebuild not submitted. Only tested on ~x86.
+  Allows for installation of Hobbit client.

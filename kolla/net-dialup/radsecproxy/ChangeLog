@@ -1,0 +1,49 @@
+# ChangeLog for net-dialup/radsecproxy
+# Copyright 2002-2012 Gentoo Foundation; Distributed under the GPL v2
+# $Header: $
+
+*radsecproxy-1.6_rc1 (27 Apr 2012)
+  Kolbjørn Barmen <gentoo@kolla.no> +radsecproxy-1.6_rc1.ebuild
+
+*radsecproxy-1.5 (8 Oct 2011)
+  Kolbjørn Barmen <gentoo@kolla.no> +radsecproxy-1.5.ebuild
+  1.5 released - fticks introduced!
+
+*radsecproxy-1.4.3 (22 Jul 2011)
+  Kolbjørn Barmen <gentoo@kolla.no> +radsecproxy-1.4.3.ebuild
+  1.4.3 released!
+
+*radsecproxy-1.4.2 (23 Nov 2010)
+  Kolbjørn Barmen <gentoo@kolla.no> +radsecproxy-1.4.2.ebuild
+  1.4.2 released!
+
+*radsecproxy-1.4.1 (18 Nov 2010)
+  Kolbjørn Barmen <gentoo@kolla.no> +radsecproxy-1.4.1.ebuild
+  1.4.1 released!
+
+*radsecproxy-1.4 (12 Jun 2010)
+  Kolbjørn Barmen <gentoo@kolla.no> +radsecproxy-1.4.ebuild
+  1.4 released!
+
+*radsecproxy-1.3.1 (22 Jul 2009)
+  Kolbjørn Barmen <gentoo@kolla.no> +radsecproxy-1.3.1.ebuild
+  1.3.1 released!
+
+*radsecproxy-1.3 (12 Mar 2009)
+  Kolbjørn Barmen <gentoo@kolla.no> +radsecproxy-1.3.ebuild
+  1.3 released!
+
+*radsecproxy-1.2 (7 Oct 2008)
+
+  Kolbjørn Barmen <gentoo@kolla.no> +radsecproxy-1.2.ebuild
+  1.2 released!
+
+*radsecproxy-1.1 (24 Jul 2008)
+
+  Kolbjørn Barmen <gentoo@kolla.no> +radsecproxy-1.1.ebuild
+  1.1 released!
+
+*radsecproxy-1.0 (21 Sep 2007)
+
+  21 Sep 2007; Kolbjørn Barmen <gentoo@kolla.no> +radsecproxy-1.0.ebuild
+  1.0 released!

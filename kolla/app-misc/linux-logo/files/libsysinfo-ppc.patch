@@ -1,0 +1,13 @@
+--- linux_logo-5.01/libsysinfo-0.2.1/Linux/cpuinfo_ppc.c.orig	2007-07-09 19:54:02.000000000 +0200
++++ linux_logo-5.01/libsysinfo-0.2.1/Linux/cpuinfo_ppc.c	2007-08-10 06:22:53.000000000 +0200
+@@ -137,7 +137,9 @@
+    
+        /* sysinfo is the only way that works on cell? */
+        /* can we detect that somehow and force it? */
++       /* YES */
++       return -2;
+    
+        /* For mac the meminfo way is definitely better */     
+-       return -1;
++       /* return -1; */
+ }

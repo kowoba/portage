@@ -1,0 +1,68 @@
+diff -Nru hobbit-4.2.0.orig/client/Makefile hobbit-4.2.0/client/Makefile
+--- hobbit-4.2.0.orig/client/Makefile	2006-08-09 22:09:58.000000000 +0200
++++ hobbit-4.2.0/client/Makefile	2006-12-17 12:09:21.000000000 +0100
+@@ -65,6 +65,8 @@
+ 	if test ! -d $(INSTALLROOT)$(BBHOME)/ext ; then mkdir -p $(INSTALLROOT)$(BBHOME)/ext ; fi
+ 	if test ! -f $(INSTALLROOT)$(BBHOME)/etc/localclient.cfg ; then cp localclient.cfg $(INSTALLROOT)$(BBHOME)/etc/ ; fi
+ 	cp -fp runclient.sh $(INSTALLROOT)$(BBHOME)
++	cp -fp raid.sh $(INSTALLROOT)$(BBHOME)/ext/raid.sh
++	chmod 755 $(INSTALLROOT)$(BBHOME)/ext/raid.sh
+ 	cp -fp $(PROGRAMS) hobbitclient*.sh $(COMMONTOOLS) $(EXTRATOOLS) $(INSTALLROOT)$(BBHOME)/bin/
+ 
+ 	../build/merge-sects clientlaunch.cfg $(INSTALLROOT)$(BBHOME)/etc/clientlaunch.cfg
+diff -Nru hobbit-4.2.0.orig/client/clientlaunch.cfg.DIST hobbit-4.2.0/client/clientlaunch.cfg.DIST
+--- hobbit-4.2.0.orig/client/clientlaunch.cfg.DIST	2006-08-09 22:09:58.000000000 +0200
++++ hobbit-4.2.0/client/clientlaunch.cfg.DIST	2006-12-17 12:03:24.000000000 +0100
+@@ -35,3 +35,11 @@
+ 	LOGFILE $HOBBITCLIENTHOME/logs/hobbitclient.log
+ 	INTERVAL 5m
+ 
++# RAID-monitor
++[raid]
++	DISABLED
++	ENVFILE $HOBBITCLIENTHOME/etc/hobbitclient.cfg
++	CMD $HOBBITCLIENTHOME/ext/raid.sh
++	LOGFILE $HOBBITCLIENTHOME/logs/hobbitraid.log
++	INTERVAL 5m
++
+diff -Nru hobbit-4.2.0.orig/client/raid.sh hobbit-4.2.0/client/raid.sh
+--- hobbit-4.2.0.orig/client/raid.sh	1970-01-01 01:00:00.000000000 +0100
++++ hobbit-4.2.0/client/raid.sh	2006-12-17 11:51:26.000000000 +0100
+@@ -0,0 +1,37 @@
++#! /bin/sh
++ 
++PERL=/usr/bin/perl
++ 
++BBHTAG=raid
++COLUMN=${BBHTAG}
++
++# Check /proc/mdstat
++# Change the variable below to another file to make tests
++RAID_STAT=/proc/mdstat
++RAID_CONF=/etc/mdadm/mdadm.conf
++RAID_ADM=/sbin/mdadm
++
++RAID_DEVS=$(${AWK} '/^ARRAY/ {print $2}' ${RAID_CONF} | ${SORT} -n)
++
++if [ -n "$(${GREP} ' blocks ' ${RAID_STAT} | ${PERL} -ne 'if (/(.*\[U*[^\]\[U]+U*\])$/) { print "Failure! $1\n"; }')" ]
++ then
++        COLOR="red"
++        MESSAGE="<h2>Problems with MD devices:</h2>"
++        RESULT="<b><u>Config:</u></b><br>$(${CAT} ${RAID_CONF})"
++        RESULT="${RESULT}<p><b><u>Running:</u></b><br>$(${RAID_ADM} --detail --scan)"
++ else
++        COLOR="green"
++        MESSAGE="<h2>All MD devices are Ok:</h2>"
++        RESULT=""
++ fi
++
++for RAID_DEV in ${RAID_DEVS} ; do
++	RESULT="${RESULT}<p><b># ${RAID_ADM} --detail ${RAID_DEV}</b><br>$(${RAID_ADM} --detail ${RAID_DEV})"
++done
++ 
++${BB} $BBDISP "status ${MACHINE}.${COLUMN} ${COLOR} $(date)
++
++${MESSAGE}
++${RESULT}"
++
++exit 0 

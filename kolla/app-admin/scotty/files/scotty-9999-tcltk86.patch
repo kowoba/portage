@@ -1,0 +1,51 @@
+--- trunk/unix/configure.in.orig	2009-04-28 08:48:22.000000000 +0200
++++ trunk/unix/configure.in	2009-04-28 08:49:55.000000000 +0200
+@@ -9,14 +9,14 @@
+ 
+ TNM_VERSION=3.0.0
+ TKI_VERSION=1.5.0
+-TCL_VERSION=8.4
+-TK_VERSION=8.4
++TCL_VERSION=8.6
++TK_VERSION=8.6
+ 
+ #----------------------------------------------------------------------------
+ #	Load the tcl configuration file.
+ #----------------------------------------------------------------------------
+ 
+-AC_PATH_PROG(tclsh,tclsh8.4)
++AC_PATH_PROG(tclsh,tclsh8.6)
+ if test -n "$tclsh" ; then
+     tclsh_prefix=`dirname $tclsh`
+     tclsh_prefix=`dirname $tclsh_prefix`
+@@ -71,8 +71,8 @@
+ 
+ AC_MSG_CHECKING(for tcl version)
+ AC_MSG_RESULT("$TCL_VERSION")
+-if test "$TCL_VERSION" != "8.4" ; then
+-    AC_MSG_ERROR("Tcl version 8.4 needed")
++if test "$TCL_VERSION" != "8.6" ; then
++    AC_MSG_ERROR("Tcl version 8.6 needed")
+ fi
+ 
+ BUILD_TARGETS="$BUILD_TARGETS scotty"
+@@ -82,7 +82,7 @@
+ #	Load the tk configuration file.
+ #----------------------------------------------------------------------------
+ 
+-AC_PATH_PROG(wish,wish8.4)
++AC_PATH_PROG(wish,wish8.6)
+ if test -n "$wish" ; then
+     wish_prefix=`dirname $wish`
+     wish_prefix=`dirname $wish_prefix`
+@@ -122,8 +122,8 @@
+ 
+     AC_MSG_CHECKING(for tk version)
+     AC_MSG_RESULT("$TK_VERSION")
+-    if test "$TK_VERSION" != "8.4" ; then
+-        AC_MSG_ERROR("Tk version 8.4 needed")
++    if test "$TK_VERSION" != "8.6" ; then
++        AC_MSG_ERROR("Tk version 8.6 needed")
+     fi
+ 
+     BUILD_TARGETS="$BUILD_TARGETS tkined"

@@ -1,0 +1,46 @@
+# ChangeLog for net-irc/inspircd
+# Copyright 1999-2007 Gentoo Foundation; Distributed under the GPL v2
+# $Header: /var/cvsroot/gentoo-x86/net-irc/inspircd/ChangeLog,v 1.9 2007/01/28 22:02:47 hansmi Exp $
+
+  28 Jan 2007; Michael Hanselmann <hansmi@gentoo.org>
+  -inspircd-1.0.6.ebuild, -inspircd-1.0.7.ebuild:
+  Remove old ebuilds.
+
+  04 Jan 2007; Michael Hanselmann <hansmi@gentoo.org>
+  inspircd-1.0.7-r1.ebuild:
+  Stable on ppc, x86.
+
+*inspircd-1.0.7-r1 (28 Nov 2006)
+
+  28 Nov 2006; Michael Hanselmann <hansmi@gentoo.org>
+  +inspircd-1.0.7-r1.ebuild:
+  New ebuild from William Pitcock in bug 150542 (comment 28). Drops SSL support.
+
+*inspircd-1.0.7 (22 Oct 2006)
+
+  22 Oct 2006; Michael Hanselmann <hansmi@gentoo.org>
+  +inspircd-1.0.7.ebuild:
+  InspIRCd 1.0.7 ebuild by William Pitcock, bug 150542.
+  - updates to 1.0.7 release
+  - fixes improper SSL built_with_use
+  - changes USE=ssl to USE=openssl or USE=gnutls to select which SSL engine
+    modules to enable
+
+  25 Aug 2006; Michael Hanselmann <hansmi@gentoo.org> inspircd-1.0.6.ebuild:
+  Stable on ppc, x86. See bug #145079.
+
+*inspircd-1.0.6 (30 Jul 2006)
+
+  30 Jul 2006; Michael Hanselmann <hansmi@gentoo.org>
+  -inspircd-1.0.5.ebuild, +inspircd-1.0.6.ebuild:
+  Bumped due to a security bug, #142185.
+
+  15 Jul 2006; Michael Hanselmann <hansmi@gentoo.org>
+  +files/init.d_inspircd:
+  Forgot init.d script.
+
+*inspircd-1.0.5 (14 Jul 2006)
+
+  14 Jul 2006; Michael Hanselmann <hansmi@gentoo.org> +metadata.xml,
+  +inspircd-1.0.5.ebuild:
+  Added to portage, ebuild by William Pitcock <nenolod@nenolod.net>.

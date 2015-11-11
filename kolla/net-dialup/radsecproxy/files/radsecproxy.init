@@ -1,0 +1,37 @@
+#! /sbin/runscript
+#
+
+description="Radius/RadSec Proxy Server"
+CMDPROG="/usr/sbin/radsecproxy"
+
+depend() {
+    use logger dns
+    need net
+}
+
+check_config() {
+        if ! [ -f "${CONFILE:-/etc/radsecproxy.conf}" ]
+        then
+                eerror "Please set configure ${CONFILE:-/etc/radsecproxy.conf}!"
+                return 1
+        fi
+        return 0
+}
+
+
+start() {
+    test -z "${CONFILE}" || CMDOPTS="-c ${CONFILE} ${CMDOPTS}"
+    ebegin "Starting radsecproxy"
+    if test -n "\${CMDOPTS}" ; then
+        start-stop-daemon --user \${CMDUSER:-nobody} --start --exec \${CMDPROG} -- \${CMDOPTS}
+    else
+        start-stop-daemon --user \${CMDUSER:-nobody} --start --exec \${CMDPROG}
+    fi
+    eend \${?}
+}
+
+stop() {
+    ebegin "Stopping radsecproxy"
+    start-stop-daemon --stop --exec \${CMDPROG}
+    eend \${?}
+}
